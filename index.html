@@ -1,0 +1,1520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PersonaQuest | 16 Personalities Test</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #7e22ce;
+            --primary-dark: #581c87;
+            --primary-light: #a855f7;
+            --background: #0f0f15;
+            --card-bg: #1a1a25;
+            --text: #e0e0e0;
+            --text-secondary: #a0a0a0;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+            width: 100%;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+            opacity: 0;
+            transform: translateY(-20px);
+            animation: fadeIn 0.6s ease-out forwards;
+            position: relative;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(90deg, var(--primary-light), #d946ef);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: var(--primary-light);
+        }
+
+        h3 {
+            font-size: 1.4rem;
+            margin: 1.5rem 0 1rem;
+            color: var(--primary-light);
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-weight: 300;
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .intro-text {
+            color: var(--text);
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            text-align: center;
+            display: inline-block;
+            margin: 0.5rem 0;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(126, 34, 206, 0.4);
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary-light);
+        }
+
+        .btn-secondary:hover {
+            background-color: rgba(126, 34, 206, 0.1);
+        }
+
+        .btn-success {
+            background-color: var(--success);
+        }
+
+        .btn-success:hover {
+            background-color: #0a8a5e;
+        }
+
+        .btn-warning {
+            background-color: var(--warning);
+        }
+
+        .btn-warning:hover {
+            background-color: #d97706;
+        }
+
+        .btn-danger {
+            background-color: var(--danger);
+        }
+
+        .btn-danger:hover {
+            background-color: #dc2626;
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 8px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            margin: 2rem 0;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--primary), var(--primary-light));
+            border-radius: 4px;
+            transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+            position: relative;
+        }
+
+        .progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            animation: shimmer 2s infinite;
+            opacity: 0.5;
+        }
+
+        @keyframes shimmer {
+            0% {
+                transform: translateX(-100%);
+            }
+            100% {
+                transform: translateX(100%);
+            }
+        }
+
+        .question-container {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s ease;
+            transform: translateY(20px);
+            opacity: 0;
+        }
+
+        .question-container.active {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .question-text {
+            font-size: 1.4rem;
+            margin-bottom: 2rem;
+            line-height: 1.5;
+            font-weight: 500;
+        }
+
+        .question-category {
+            color: var(--primary-light);
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .option-btn {
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text);
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            text-align: left;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .option-btn:hover {
+            background-color: rgba(126, 34, 206, 0.2);
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .option-btn.selected {
+            background-color: rgba(126, 34, 206, 0.3);
+            border-color: var(--primary);
+        }
+
+        .option-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.6s;
+        }
+
+        .option-btn:hover::before {
+            left: 100%;
+        }
+
+        .submit-container {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .submit-btn {
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+        }
+
+        .submit-btn.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .result-container {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transform: scale(0.9);
+            opacity: 0;
+            transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .result-container.active {
+            display: block;
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        .personality-type {
+            font-size: 2rem;
+            color: var(--primary-light);
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .personality-name {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .personality-description {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 2rem;
+            text-align: left;
+        }
+
+        .traits-container {
+            display: flex;
+            gap: 1rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .trait-card {
+            background-color: rgba(126, 34, 206, 0.1);
+            border: 1px solid var(--primary);
+            border-radius: 8px;
+            padding: 1rem;
+            flex: 1;
+            min-width: 200px;
+            max-width: 300px;
+        }
+
+        .trait-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--primary-light);
+        }
+
+        .trait-list {
+            list-style-type: none;
+            text-align: left;
+        }
+
+        .trait-list li {
+            margin-bottom: 0.3rem;
+            position: relative;
+            padding-left: 1.2rem;
+        }
+
+        .trait-list li:before {
+            content: '•';
+            color: var(--primary-light);
+            position: absolute;
+            left: 0;
+        }
+
+        .strengths .trait-list li:before {
+            color: var(--success);
+        }
+
+        .weaknesses .trait-list li:before {
+            color: var(--danger);
+        }
+
+        .intro-container {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            transform: scale(0.9);
+            opacity: 0;
+            transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .intro-container.active {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        .personality-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .personality-card {
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 1rem;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+
+        .personality-card:hover {
+            background-color: rgba(126, 34, 206, 0.1);
+            border-color: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        .personality-card .type {
+            font-weight: 700;
+            color: var(--primary-light);
+        }
+
+        .personality-card .name {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .test-takers {
+            margin: 1rem 0;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .test-takers strong {
+            color: var(--primary-light);
+        }
+
+        .auth-form {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-top: 2rem;
+            text-align: left;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.8rem;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background-color: rgba(255, 255, 255, 0.05);
+            color: var(--text);
+            font-size: 1rem;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .auth-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1rem;
+        }
+
+        .auth-toggle {
+            margin-top: 1rem;
+            text-align: center;
+        }
+
+        .auth-toggle a {
+            color: var(--primary-light);
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        .auth-container {
+            display: none;
+        }
+
+        .auth-container.active {
+            display: block;
+        }
+
+        .auth-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+        }
+
+        footer {
+            text-align: center;
+            padding: 1.5rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-top: auto;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1.5rem;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            h2 {
+                font-size: 1.5rem;
+            }
+            
+            .question-text {
+                font-size: 1.2rem;
+            }
+
+            .traits-container {
+                flex-direction: column;
+            }
+
+            .trait-card {
+                min-width: 100%;
+            }
+
+            .auth-btn {
+                position: static;
+                margin-bottom: 1rem;
+                display: block;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>PersonaQuest</h1>
+            <p class="subtitle">Discover your true personality type among the 16 personalities</p>
+            <button class="btn btn-secondary auth-btn" id="authBtn"><i class="fas fa-user"></i> Login/Signup</button>
+        </header>
+
+        <div class="intro-container active" id="introContainer">
+            <h2>Welcome to Your Personality Journey</h2>
+            <p class="intro-text">
+                This comprehensive personality test will help you discover which of the 16 personality types you align with. 
+                Based on the Myers-Briggs Type Indicator (MBTI), this assessment analyzes your preferences across four key dimensions:
+            </p>
+            
+            <div class="traits-container">
+                <div class="trait-card">
+                    <div class="trait-title">Energy Orientation</div>
+                    <ul class="trait-list">
+                        <li>Extraversion (E) - Outward focus</li>
+                        <li>Introversion (I) - Inward focus</li>
+                    </ul>
+                </div>
+                <div class="trait-card">
+                    <div class="trait-title">Information Processing</div>
+                    <ul class="trait-list">
+                        <li>Sensing (S) - Concrete details</li>
+                        <li>Intuition (N) - Big picture</li>
+                    </ul>
+                </div>
+                <div class="trait-card">
+                    <div class="trait-title">Decision Making</div>
+                    <ul class="trait-list">
+                        <li>Thinking (T) - Logic and fairness</li>
+                        <li>Feeling (F) - Values and harmony</li>
+                    </ul>
+                </div>
+                <div class="trait-card">
+                    <div class="trait-title">Lifestyle Approach</div>
+                    <ul class="trait-list">
+                        <li>Judging (J) - Structured and planned</li>
+                        <li>Perceiving (P) - Flexible and spontaneous</li>
+                    </ul>
+                </div>
+            </div>
+
+            <p class="intro-text">
+                The test consists of 12 carefully crafted questions that will analyze your natural preferences in these dimensions.
+                Answer each question honestly - there are no right or wrong answers. Your results will provide insights into your
+                personality strengths, weaknesses, and how you interact with the world.
+            </p>
+
+            <h3>Possible Personality Types</h3>
+            <div class="personality-grid">
+                <div class="personality-card">
+                    <div class="type">INTJ</div>
+                    <div class="name">The Architect</div>
+                </div>
+                <div class="personality-card">
+                    <div class="type">INTP</div>
+                    <div class="name">The Logician</div>
+                </div>
+                <div class="personality-card">
+                    <div class="type">ENTJ</div>
+                    <div class="name">The Commander</div>
+                </div>
+                <div class="personality-card">
+                    <div class="type">ENTP</div>
+                    <div class="name">The Debater</div>
+                </div>
+                <div class="personality-card">
+                    <div class="type">INFJ</div>
+                    <div class="name">The Advocate</div>
+                </div>
+                <div class="personality-card">
+                    <div class="type">INFP</div>
+                    <div class="name">The Mediator</div>
+                </div>
+                <div class="personality-card">
+                    <div class="type">ENFJ</div>
+                    <div class="name">The Protagonist</div>
+                </div>
+                <div class="personality-card">
+                    <div class="type">ENFP</div>
+                    <div class="name">The Campaigner</div>
+                </div>
+                <div class="personality-card">
+                    <div class="type">ISTJ</div>
+                    <div class="name">The Logistician</div>
+                </div>
+                <div class="personality-card">
+                    <div class="type">ISFJ</div>
+                    <div class="name">The Defender</div>
+                </div>
+                <div class="personality-card">
+                    <div class="type">ESTJ</div>
+                    <div class="name">The Executive</div>
+                </div>
+                <div class="personality-card">
+                    <div class="type">ESFJ</div>
+                    <div class="name">The Consul</div>
+                </div>
+                <div class="personality-card">
+                    <div class="type">ISTP</div>
+                    <div class="name">The Virtuoso</div>
+                </div>
+                <div class="personality-card">
+                    <div class="type">ISFP</div>
+                    <div class="name">The Adventurer</div>
+                </div>
+                <div class="personality-card">
+                    <div class="type">ESTP</div>
+                    <div class="name">The Entrepreneur</div>
+                </div>
+                <div class="personality-card">
+                    <div class="type">ESFP</div>
+                    <div class="name">The Entertainer</div>
+                </div>
+            </div>
+
+            <div class="test-takers">
+                <strong id="testTakersCount">0</strong> people have taken this test!
+            </div>
+
+            <button class="btn" id="startTestBtn">Begin Personality Test</button>
+        </div>
+
+        <div class="auth-container" id="authContainer">
+            <div class="auth-form" id="loginForm">
+                <h2>Login</h2>
+                <div class="form-group">
+                    <label for="loginEmail">Email</label>
+                    <input type="email" id="loginEmail" placeholder="Enter your email">
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" placeholder="Enter your password">
+                </div>
+                <div class="auth-buttons">
+                    <button class="btn btn-success" id="loginBtn">Login</button>
+                    <button class="btn btn-secondary" id="showSignupBtn">Create Account</button>
+                </div>
+            </div>
+
+            <div class="auth-form" id="signupForm" style="display: none;">
+                <h2>Sign Up</h2>
+                <div class="form-group">
+                    <label for="signupName">Name</label>
+                    <input type="text" id="signupName" placeholder="Enter your name">
+                </div>
+                <div class="form-group">
+                    <label for="signupEmail">Email</label>
+                    <input type="email" id="signupEmail" placeholder="Enter your email">
+                </div>
+                <div class="form-group">
+                    <label for="signupPassword">Password</label>
+                    <input type="password" id="signupPassword" placeholder="Create a password">
+                </div>
+                <div class="auth-buttons">
+                    <button class="btn btn-success" id="signupBtn">Sign Up</button>
+                    <button class="btn btn-secondary" id="showLoginBtn">Already have an account?</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="progress-container" id="progressContainer" style="display: none;">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+
+        <div class="question-container" id="questionContainer" style="display: none;">
+            <span class="question-category" id="questionCategory"></span>
+            <div class="question-text" id="questionText"></div>
+            <div class="options-container" id="optionsContainer"></div>
+            <div class="submit-container">
+                <button class="btn submit-btn" id="submitBtn">Submit Answer</button>
+            </div>
+        </div>
+
+        <div class="result-container" id="resultContainer">
+            <div class="personality-type" id="personalityType"></div>
+            <div class="personality-name" id="personalityName"></div>
+            <div class="personality-description" id="personalityDescription"></div>
+            
+            <div class="traits-container">
+                <div class="trait-card strengths">
+                    <div class="trait-title">Strengths</div>
+                    <ul class="trait-list" id="strengthsList"></ul>
+                </div>
+                <div class="trait-card weaknesses">
+                    <div class="trait-title">Weaknesses</div>
+                    <ul class="trait-list" id="weaknessesList"></ul>
+                </div>
+            </div>
+
+            <div class="auth-form" id="saveResultsForm">
+                <h3>Save Your Results</h3>
+                <p>Create an account to save your results and track your personality journey over time.</p>
+                <div class="auth-buttons">
+                    <button class="btn btn-success" id="saveResultsBtn">Sign Up to Save</button>
+                    <button class="btn btn-secondary" id="continueWithoutSaving">Continue Without Saving</button>
+                </div>
+            </div>
+
+            <button class="btn btn-secondary" id="restartBtn">Take Test Again</button>
+        </div>
+    </div>
+
+    <footer>
+        © 2023 PersonaQuest | Based on the 16 Personality Types
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Database simulation using localStorage
+            const db = {
+                init: function() {
+                    if (!localStorage.getItem('personaQuestDB')) {
+                        localStorage.setItem('personaQuestDB', JSON.stringify({
+                            users: [],
+                            testTakers: 0,
+                            results: []
+                        }));
+                    }
+                    return JSON.parse(localStorage.getItem('personaQuestDB'));
+                },
+                update: function(data) {
+                    localStorage.setItem('personaQuestDB', JSON.stringify(data));
+                },
+                addTestTaker: function() {
+                    const data = this.init();
+                    data.testTakers++;
+                    this.update(data);
+                    return data.testTakers;
+                },
+                addUser: function(user) {
+                    const data = this.init();
+                    data.users.push(user);
+                    this.update(data);
+                },
+                addResult: function(result) {
+                    const data = this.init();
+                    data.results.push(result);
+                    this.update(data);
+                },
+                getUser: function(email) {
+                    const data = this.init();
+                    return data.users.find(u => u.email === email);
+                }
+            };
+
+            // Initialize database
+            const database = db.init();
+            document.getElementById('testTakersCount').textContent = database.testTakers;
+
+            // Personality strengths and weaknesses
+            const personalityTraits = {
+                "INTJ": {
+                    strengths: [
+                        "Strategic, long-term thinking",
+                        "Independent and self-confident",
+                        "Highly analytical and logical",
+                        "Creative problem-solving",
+                        "Determined and hard-working"
+                    ],
+                    weaknesses: [
+                        "Can be overly critical",
+                        "May dismiss emotions as irrelevant",
+                        "Perfectionistic tendencies",
+                        "Can be dismissive of others' ideas",
+                        "Struggle with small talk"
+                    ]
+                },
+                "INTP": {
+                    strengths: [
+                        "Original and innovative thinking",
+                        "Open-minded and curious",
+                        "Objective and logical analysis",
+                        "Flexible and adaptable",
+                        "Honest and straightforward"
+                    ],
+                    weaknesses: [
+                        "Can be absent-minded",
+                        "May neglect practical matters",
+                        "Struggle with routine tasks",
+                        "Can be overly private",
+                        "May procrastinate"
+                    ]
+                },
+                "ENTJ": {
+                    strengths: [
+                        "Natural leadership abilities",
+                        "Efficient and organized",
+                        "Assertive and confident",
+                        "Strategic, big-picture thinking",
+                        "Direct and honest communication"
+                    ],
+                    weaknesses: [
+                        "Can be domineering",
+                        "Impatient with inefficiency",
+                        "May overlook others' feelings",
+                        "Stubborn in their views",
+                        "Can be workaholics"
+                    ]
+                },
+                "ENTP": {
+                    strengths: [
+                        "Quick, innovative thinkers",
+                        "Excellent problem-solvers",
+                        "Charismatic and energetic",
+                        "Adaptable and flexible",
+                        "See possibilities everywhere"
+                    ],
+                    weaknesses: [
+                        "Can argue just for fun",
+                        "May neglect routine tasks",
+                        "Easily bored with details",
+                        "Can be insensitive at times",
+                        "May start many projects but finish few"
+                    ]
+                },
+                "INFJ": {
+                    strengths: [
+                        "Deeply caring and compassionate",
+                        "Insightful about people",
+                        "Creative and visionary",
+                        "Strong value system",
+                        "Determined to make a difference"
+                    ],
+                    weaknesses: [
+                        "Perfectionistic tendencies",
+                        "Sensitive to criticism",
+                        "Can burn out easily",
+                        "Private and hard to know",
+                        "May avoid confrontation"
+                    ]
+                },
+                "INFP": {
+                    strengths: [
+                        "Empathetic and caring",
+                        "Creative and imaginative",
+                        "Open-minded and accepting",
+                        "Strong personal values",
+                        "Flexible and adaptable"
+                    ],
+                    weaknesses: [
+                        "Can be overly idealistic",
+                        "May take criticism personally",
+                        "Dislike routine tasks",
+                        "Can procrastinate",
+                        "May avoid conflict"
+                    ]
+                },
+                "ENFJ": {
+                    strengths: [
+                        "Charismatic and inspiring",
+                        "Natural leaders and mentors",
+                        "Excellent communicators",
+                        "Warm and empathetic",
+                        "Organized and responsible"
+                    ],
+                    weaknesses: [
+                        "Can be overly idealistic",
+                        "May neglect their own needs",
+                        "Sensitive to criticism",
+                        "Can be manipulative",
+                        "May avoid conflict"
+                    ]
+                },
+                "ENFP": {
+                    strengths: [
+                        "Enthusiastic and energetic",
+                        "Creative and innovative",
+                        "Excellent communicators",
+                        "Perceptive about people",
+                        "Flexible and spontaneous"
+                    ],
+                    weaknesses: [
+                        "Can be disorganized",
+                        "May struggle with focus",
+                        "Dislike routine tasks",
+                        "Can be overly emotional",
+                        "May procrastinate"
+                    ]
+                },
+                "ISTJ": {
+                    strengths: [
+                        "Reliable and responsible",
+                        "Practical and realistic",
+                        "Detail-oriented",
+                        "Organized and efficient",
+                        "Honest and direct"
+                    ],
+                    weaknesses: [
+                        "Can be inflexible",
+                        "May resist new ideas",
+                        "Struggle with abstract concepts",
+                        "Can be overly blunt",
+                        "May suppress emotions"
+                    ]
+                },
+                "ISFJ": {
+                    strengths: [
+                        "Warm and caring",
+                        "Reliable and responsible",
+                        "Practical and realistic",
+                        "Detail-oriented",
+                        "Loyal and committed"
+                    ],
+                    weaknesses: [
+                        "Can be overly humble",
+                        "May neglect their own needs",
+                        "Dislike change",
+                        "Can take criticism personally",
+                        "May avoid conflict"
+                    ]
+                },
+                "ESTJ": {
+                    strengths: [
+                        "Organized and efficient",
+                        "Practical and realistic",
+                        "Direct and honest",
+                        "Reliable and responsible",
+                        "Strong leadership skills"
+                    ],
+                    weaknesses: [
+                        "Can be inflexible",
+                        "May be insensitive",
+                        "Impatient with inefficiency",
+                        "Can be controlling",
+                        "May dismiss new ideas"
+                    ]
+                },
+                "ESFJ": {
+                    strengths: [
+                        "Warm and caring",
+                        "Social and outgoing",
+                        "Reliable and responsible",
+                        "Practical and realistic",
+                        "Excellent at maintaining harmony"
+                    ],
+                    weaknesses: [
+                        "Can be overly sensitive",
+                        "May avoid conflict",
+                        "Dislike criticism",
+                        "Can be controlling",
+                        "May resist change"
+                    ]
+                },
+                "ISTP": {
+                    strengths: [
+                        "Practical problem-solvers",
+                        "Calm in crises",
+                        "Flexible and adaptable",
+                        "Independent",
+                        "Excellent with tools and systems"
+                    ],
+                    weaknesses: [
+                        "Can be risk-seeking",
+                        "May appear aloof",
+                        "Dislike commitment",
+                        "Can be insensitive",
+                        "May procrastinate"
+                    ]
+                },
+                "ISFP": {
+                    strengths: [
+                        "Warm and caring",
+                        "Artistic and creative",
+                        "Flexible and adaptable",
+                        "Live in the present moment",
+                        "Non-judgmental"
+                    ],
+                    weaknesses: [
+                        "Can be overly private",
+                        "May avoid conflict",
+                        "Dislike routine",
+                        "Can be overly sensitive",
+                        "May procrastinate"
+                    ]
+                },
+                "ESTP": {
+                    strengths: [
+                        "Energetic and action-oriented",
+                        "Practical problem-solvers",
+                        "Adaptable and flexible",
+                        "Excellent in crises",
+                        "Charismatic and fun"
+                    ],
+                    weaknesses: [
+                        "Can be impulsive",
+                        "May neglect long-term planning",
+                        "Dislike routine",
+                        "Can be insensitive",
+                        "May take unnecessary risks"
+                    ]
+                },
+                "ESFP": {
+                    strengths: [
+                        "Enthusiastic and energetic",
+                        "Social and outgoing",
+                        "Practical and realistic",
+                        "Live in the present moment",
+                        "Excellent at creating fun"
+                    ],
+                    weaknesses: [
+                        "Can be disorganized",
+                        "May avoid serious topics",
+                        "Dislike routine",
+                        "Can be overly sensitive",
+                        "May struggle with long-term goals"
+                    ]
+                }
+            };
+
+            // Questions data
+            const questions = [
+                {
+                    category: "Social Battery",
+                    question: "When you're at a party, you usually:",
+                    options: [
+                        { text: "Talk to many people, even strangers", value: "E" },
+                        { text: "Stick with a few people you know", value: "I" }
+                    ]
+                },
+                {
+                    category: "Recharging",
+                    question: "After a long week, you'd rather:",
+                    options: [
+                        { text: "Go out and hang with friends", value: "E" },
+                        { text: "Chill alone or with one close friend", value: "I" }
+                    ]
+                },
+                {
+                    category: "Learning Style",
+                    question: "You prefer to learn through:",
+                    options: [
+                        { text: "Hands-on experience and facts", value: "S" },
+                        { text: "Theories, ideas, and big-picture thinking", value: "N" }
+                    ]
+                },
+                {
+                    category: "Noticing Details",
+                    question: "When observing something new, you usually notice:",
+                    options: [
+                        { text: "Practical details and what's real", value: "S" },
+                        { text: "Patterns, possibilities, or hidden meanings", value: "N" }
+                    ]
+                },
+                {
+                    category: "Decisions",
+                    question: "You make decisions based on:",
+                    options: [
+                        { text: "Logic, fairness, and pros/cons", value: "T" },
+                        { text: "Feelings, values, and impact on others", value: "F" }
+                    ]
+                },
+                {
+                    category: "Conflict",
+                    question: "In conflict, you usually focus on:",
+                    options: [
+                        { text: "What's objectively right or wrong", value: "T" },
+                        { text: "How everyone feels and what's fair emotionally", value: "F" }
+                    ]
+                },
+                {
+                    category: "Work Style",
+                    question: "You prefer to:",
+                    options: [
+                        { text: "Follow a structured plan or checklist", value: "J" },
+                        { text: "Stay flexible and go with the flow", value: "P" }
+                    ]
+                },
+                {
+                    category: "Deadlines",
+                    question: "When a deadline is approaching, you:",
+                    options: [
+                        { text: "Like to have things done early", value: "J" },
+                        { text: "Often wait and work better under pressure", value: "P" }
+                    ]
+                },
+                {
+                    category: "Conversation",
+                    question: "You usually focus more on:",
+                    options: [
+                        { text: "What's directly being said", value: "S" },
+                        { text: "Underlying meanings or vibes", value: "N" }
+                    ]
+                },
+                {
+                    category: "Free Time",
+                    question: "You'd rather spend free time:",
+                    options: [
+                        { text: "Doing something active or productive", value: "E" },
+                        { text: "Exploring hobbies, games, or ideas quietly", value: "I" }
+                    ]
+                },
+                {
+                    category: "Risk Taking",
+                    question: "When facing a big decision, you:",
+                    options: [
+                        { text: "Think it through logically", value: "T" },
+                        { text: "Trust your gut feeling", value: "F" }
+                    ]
+                },
+                {
+                    category: "Planning vs. Spontaneity",
+                    question: "You prefer:",
+                    options: [
+                        { text: "Clear plans and sticking to them", value: "J" },
+                        { text: "Leaving options open and deciding later", value: "P" }
+                    ]
+                }
+            ];
+
+            // Personality types data
+            const personalityTypes = {
+                "INTJ": {
+                    name: "The Architect",
+                    description: "Imaginative and strategic thinkers with a plan for everything. INTJs are independent, analytical, and determined, with a talent for seeing possibilities for improvement. They approach life by analyzing everything with their sharp minds and organizing their surroundings into a carefully structured system."
+                },
+                "INTP": {
+                    name: "The Logician",
+                    description: "Innovative inventors with an unquenchable thirst for knowledge. INTPs are logical, abstract, and curious, always searching for the universal laws behind everything. They love patterns, spotting discrepancies, and diving deep into theoretical concepts."
+                },
+                "ENTJ": {
+                    name: "The Commander",
+                    description: "Bold, imaginative, and strong-willed leaders who easily see inefficiencies. ENTJs are strategic, decisive, and natural leaders who mobilize people toward a shared vision. They have a clear plan and the determination to see it through."
+                },
+                "ENTP": {
+                    name: "The Debater",
+                    description: "Smart and curious thinkers who cannot resist an intellectual challenge. ENTPs are quick, innovative, and enjoy playing devil's advocate to explore all perspectives. They see life as a giant chessboard to navigate with quick wit and strategic thinking."
+                },
+                "INFJ": {
+                    name: "The Advocate",
+                    description: "Quiet and mystical, yet very inspiring and tireless idealists. INFJs are creative, compassionate, and insightful, with a strong sense of integrity. They have a unique ability to intuit others' emotions and motivations, often before the person themselves is aware of them."
+                },
+                "INFP": {
+                    name: "The Mediator",
+                    description: "Poetic, kind, and altruistic people, always eager to help a good cause. INFPs are idealistic, empathetic, and value authenticity above all else. They see life as a canvas for moral exploration and personal growth."
+                },
+                "ENFJ": {
+                    name: "The Protagonist",
+                    description: "Charismatic and inspiring leaders, able to mesmerize their listeners. ENFJs are warm, empathetic, and persuasive, with a natural ability to motivate others. They focus on helping others grow and develop their potential."
+                },
+                "ENFP": {
+                    name: "The Campaigner",
+                    description: "Enthusiastic, creative, and sociable free spirits who can always find a reason to smile. ENFPs are spontaneous, optimistic, and love exploring new ideas and possibilities. They see life as a complex puzzle where everything connects in fascinating ways."
+                },
+                "ISTJ": {
+                    name: "The Logistician",
+                    description: "Practical and fact-minded individuals whose reliability cannot be doubted. ISTJs are responsible, organized, and value tradition and order. They approach life with a no-nonsense attitude and a strong sense of duty."
+                },
+                "ISFJ": {
+                    name: "The Defender",
+                    description: "Very dedicated and warm protectors, always ready to defend their loved ones. ISFJs are conscientious, caring, and have a strong sense of duty. They show their love through practical actions and remembering important details about people."
+                },
+                "ESTJ": {
+                    name: "The Executive",
+                    description: "Excellent administrators, unsurpassed at managing things or people. ESTJs are practical, traditional, and excel at organizing projects and people. They value order, structure, and getting things done efficiently."
+                },
+                "ESFJ": {
+                    name: "The Consul",
+                    description: "Extraordinarily caring, social, and popular people, always eager to help. ESFJs are sociable, harmonious, and derive satisfaction from supporting others. They thrive in structured environments where they can care for others."
+                },
+                "ISTP": {
+                    name: "The Virtuoso",
+                    description: "Bold and practical experimenters, masters of all kinds of tools. ISTPs are analytical, spontaneous, and excel in crisis situations. They approach life with a hands-on mentality and a desire to understand how things work."
+                },
+                "ISFP": {
+                    name: "The Adventurer",
+                    description: "Flexible and charming artists, always ready to explore and experience something new. ISFPs are gentle, sensitive, and live in the present moment. They express themselves through action and appreciate beauty in all forms."
+                },
+                "ESTP": {
+                    name: "The Entrepreneur",
+                    description: "Smart, energetic, and very perceptive people who truly enjoy living on the edge. ESTPs are action-oriented, pragmatic, and excellent at thinking on their feet. They dive into life headfirst, craving excitement and direct experience."
+                },
+                "ESFP": {
+                    name: "The Entertainer",
+                    description: "Spontaneous, energetic, and enthusiastic people who love life and make the most of it. ESFPs are playful, sociable, and bring excitement to any situation. They live in the moment and enjoy bringing joy to others."
+                }
+            };
+
+            // DOM elements
+            const introContainer = document.getElementById('introContainer');
+            const startTestBtn = document.getElementById('startTestBtn');
+            const progressContainer = document.getElementById('progressContainer');
+            const progressBar = document.getElementById('progressBar');
+            const questionCategory = document.getElementById('questionCategory');
+            const questionText = document.getElementById('questionText');
+            const optionsContainer = document.getElementById('optionsContainer');
+            const submitBtn = document.getElementById('submitBtn');
+            const questionContainer = document.getElementById('questionContainer');
+            const resultContainer = document.getElementById('resultContainer');
+            const personalityType = document.getElementById('personalityType');
+            const personalityName = document.getElementById('personalityName');
+            const personalityDescription = document.getElementById('personalityDescription');
+            const strengthsList = document.getElementById('strengthsList');
+            const weaknessesList = document.getElementById('weaknessesList');
+            const saveResultsForm = document.getElementById('saveResultsForm');
+            const saveResultsBtn = document.getElementById('saveResultsBtn');
+            const continueWithoutSaving = document.getElementById('continueWithoutSaving');
+            const restartBtn = document.getElementById('restartBtn');
+            const authBtn = document.getElementById('authBtn');
+            const authContainer = document.getElementById('authContainer');
+            const loginForm = document.getElementById('loginForm');
+            const signupForm = document.getElementById('signupForm');
+            const loginBtn = document.getElementById('loginBtn');
+            const signupBtn = document.getElementById('signupBtn');
+            const showSignupBtn = document.getElementById('showSignupBtn');
+            const showLoginBtn = document.getElementById('showLoginBtn');
+            const testTakersCount = document.getElementById('testTakersCount');
+
+            // State variables
+            let currentQuestion = 0;
+            let selectedOption = null;
+            let answers = [];
+            let personalityScores = {
+                E: 0, I: 0,
+                S: 0, N: 0,
+                T: 0, F: 0,
+                J: 0, P: 0
+            };
+            let currentUser = null;
+
+            // Initialize the test
+            function initTest() {
+                // Update test takers count
+                const newCount = db.addTestTaker();
+                testTakersCount.textContent = newCount;
+
+                // Hide intro and show first question
+                introContainer.classList.remove('active');
+                setTimeout(() => {
+                    introContainer.style.display = 'none';
+                    progressContainer.style.display = 'block';
+                    questionContainer.style.display = 'block';
+                    showQuestion();
+                }, 400);
+            }
+
+            // Show current question
+            function showQuestion() {
+                if (currentQuestion >= questions.length) {
+                    showResult();
+                    return;
+                }
+
+                // Update progress bar
+                const progress = ((currentQuestion) / questions.length) * 100;
+                progressBar.style.width = `${progress}%`;
+
+                // Reset selection
+                selectedOption = null;
+                submitBtn.classList.remove('visible');
+
+                // Animate out current question
+                questionContainer.classList.remove('active');
+                
+                // After animation completes, update content and animate in
+                setTimeout(() => {
+                    const question = questions[currentQuestion];
+                    questionCategory.textContent = `❓ ${question.category}`;
+                    questionText.textContent = question.question;
+                    optionsContainer.innerHTML = '';
+                    
+                    question.options.forEach((option, index) => {
+                        const optionBtn = document.createElement('button');
+                        optionBtn.className = 'option-btn';
+                        optionBtn.textContent = option.text;
+                        optionBtn.dataset.value = option.value;
+                        optionBtn.addEventListener('click', () => selectOption(optionBtn, option.value));
+                        
+                        // Add slight delay to each option for staggered animation
+                        optionBtn.style.animationDelay = `${index * 0.1}s`;
+                        optionsContainer.appendChild(optionBtn);
+                    });
+                    
+                    questionContainer.classList.add('active');
+                }, 400);
+            }
+
+            // Handle option selection
+            function selectOption(button, value) {
+                // Remove selected class from all options
+                document.querySelectorAll('.option-btn').forEach(btn => {
+                    btn.classList.remove('selected');
+                });
+                
+                // Add selected class to clicked option
+                button.classList.add('selected');
+                selectedOption = value;
+                
+                // Show submit button
+                submitBtn.classList.add('visible');
+            }
+
+            // Handle answer submission
+            function submitAnswer() {
+                if (selectedOption === null) return;
+                
+                // Update scores based on selected option
+                personalityScores[selectedOption]++;
+                answers.push(selectedOption);
+                currentQuestion++;
+                
+                // Animate out current question
+                questionContainer.classList.remove('active');
+                
+                // Show next question after a brief delay
+                setTimeout(() => {
+                    showQuestion();
+                }, 400);
+            }
+
+            // Calculate and display result
+            function showResult() {
+                // Determine personality type
+                const type = [
+                    personalityScores.E > personalityScores.I ? 'E' : 'I',
+                    personalityScores.S > personalityScores.N ? 'S' : 'N',
+                    personalityScores.T > personalityScores.F ? 'T' : 'F',
+                    personalityScores.J > personalityScores.P ? 'J' : 'P'
+                ].join('');
+                
+                // Update progress bar to 100%
+                progressBar.style.width = '100%';
+                
+                // Display result
+                personalityType.textContent = type;
+                personalityName.textContent = personalityTypes[type].name;
+                personalityDescription.textContent = personalityTypes[type].description;
+                
+                // Display strengths and weaknesses
+                strengthsList.innerHTML = '';
+                weaknessesList.innerHTML = '';
+                
+                personalityTraits[type].strengths.forEach(strength => {
+                    const li = document.createElement('li');
+                    li.textContent = strength;
+                    strengthsList.appendChild(li);
+                });
+                
+                personalityTraits[type].weaknesses.forEach(weakness => {
+                    const li = document.createElement('li');
+                    li.textContent = weakness;
+                    weaknessesList.appendChild(li);
+                });
+                
+                // Hide question container and show result container
+                questionContainer.style.display = 'none';
+                progressContainer.style.display = 'none';
+                resultContainer.classList.add('active');
+                
+                // Show/hide save results form based on login status
+                if (currentUser) {
+                    saveResultsForm.style.display = 'none';
+                    // Save results automatically for logged in users
+                    db.addResult({
+                        userId: currentUser.email,
+                        type: type,
+                        date: new Date().toISOString(),
+                        scores: personalityScores
+                    });
+                } else {
+                    saveResultsForm.style.display = 'block';
+                }
+            }
+
+            // Restart the test
+            function restartTest() {
+                // Reset state
+                currentQuestion = 0;
+                selectedOption = null;
+                answers = [];
+                personalityScores = {
+                    E: 0, I: 0,
+                    S: 0, N: 0,
+                    T: 0, F: 0,
+                    J: 0, P: 0
+                };
+                
+                // Hide result container and show intro container
+                resultContainer.classList.remove('active');
+                introContainer.style.display = 'block';
+                introContainer.classList.add('active');
+                progressContainer.style.display = 'none';
+                questionContainer.style.display = 'none';
+            }
+
+            // Toggle auth forms
+            function showLoginForm() {
+                loginForm.style.display = 'block';
+                signupForm.style.display = 'none';
+            }
+
+            function showSignupForm() {
+                loginForm.style.display = 'none';
+                signupForm.style.display = 'block';
+            }
+
+            // Handle login
+            function handleLogin() {
+                const email = document.getElementById('loginEmail').value;
+                const password = document.getElementById('loginPassword').value;
+                
+                if (!email || !password) {
+                    alert('Please enter both email and password');
+                    return;
+                }
+                
+                const user = db.getUser(email);
+                if (user && user.password === password) {
+                    currentUser = user;
+                    alert('Login successful!');
+                    authContainer.classList.remove('active');
+                    authBtn.textContent = `Hi, ${user.name.split(' ')[0]}!`;
+                } else {
+                    alert('Invalid email or password');
+                }
+            }
+
+            // Handle signup
+            function handleSignup() {
+                const name = document.getElementById('signupName').value;
+                const email = document.getElementById('signupEmail').value;
+                const password = document.getElementById('signupPassword').value;
+                
+                if (!name || !email || !password) {
+                    alert('Please fill in all fields');
+                    return;
+                }
+                
+                if (db.getUser(email)) {
+                    alert('User with this email already exists');
+                    return;
+                }
+                
+                const user = { name, email, password };
+                db.addUser(user);
+                currentUser = user;
+                alert('Account created successfully!');
+                showLoginForm();
+                authContainer.classList.remove('active');
+                authBtn.textContent = `Hi, ${name.split(' ')[0]}!`;
+            }
+
+            // Toggle auth container
+            function toggleAuthContainer() {
+                if (authContainer.classList.contains('active')) {
+                    authContainer.classList.remove('active');
+                } else {
+                    authContainer.classList.add('active');
+                    showLoginForm();
+                }
+            }
+
+            // Event listeners
+            startTestBtn.addEventListener('click', initTest);
+            submitBtn.addEventListener('click', submitAnswer);
+            restartBtn.addEventListener('click', restartTest);
+            authBtn.addEventListener('click', toggleAuthContainer);
+            loginBtn.addEventListener('click', handleLogin);
+            signupBtn.addEventListener('click', handleSignup);
+            showSignupBtn.addEventListener('click', showSignupForm);
+            showLoginBtn.addEventListener('click', showLoginForm);
+            saveResultsBtn.addEventListener('click', () => {
+                saveResultsForm.style.display = 'none';
+                toggleAuthContainer();
+            });
+            continueWithoutSaving.addEventListener('click', () => {
+                saveResultsForm.style.display = 'none';
+            });
+
+            // Initialize intro screen
+            setTimeout(() => {
+                introContainer.classList.add('active');
+            }, 100);
+        });
+    </script>
+</body>
+</html>
